@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using PerfectHoliday.Data;
 using PerfectHoliday.Models;
 
-namespace PerfectHoliday.Pages.Bookings
+namespace PerfectHoliday.Pages.Hotels
 {
     public class EditModel : PageModel
     {
@@ -22,22 +21,21 @@ namespace PerfectHoliday.Pages.Bookings
         }
 
         [BindProperty]
-        public Booking Booking { get; set; } = default!;
+        public Hotel Hotel { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Booking == null)
+            if (id == null || _context.Hotel == null)
             {
                 return NotFound();
             }
 
-            var booking =  await _context.Booking.FirstOrDefaultAsync(m => m.Id == id);
-            if (booking == null)
+            var hotel =  await _context.Hotel.FirstOrDefaultAsync(m => m.Id == id);
+            if (hotel == null)
             {
                 return NotFound();
             }
-            Booking = booking;
-            ViewData["HotelID"] = new SelectList(_context.Set<Hotel>(), "ID","HotelName");
+            Hotel = hotel;
             return Page();
         }
 
@@ -50,7 +48,7 @@ namespace PerfectHoliday.Pages.Bookings
                 return Page();
             }
 
-            _context.Attach(Booking).State = EntityState.Modified;
+            _context.Attach(Hotel).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +56,7 @@ namespace PerfectHoliday.Pages.Bookings
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookingExists(Booking.Id))
+                if (!HotelExists(Hotel.Id))
                 {
                     return NotFound();
                 }
@@ -71,9 +69,9 @@ namespace PerfectHoliday.Pages.Bookings
             return RedirectToPage("./Index");
         }
 
-        private bool BookingExists(int id)
+        private bool HotelExists(int id)
         {
-          return (_context.Booking?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Hotel?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

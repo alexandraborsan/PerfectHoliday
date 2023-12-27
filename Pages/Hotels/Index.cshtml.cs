@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using PerfectHoliday.Data;
 using PerfectHoliday.Models;
 
-namespace PerfectHoliday.Pages.Bookings
+namespace PerfectHoliday.Pages.Hotels
 {
     public class IndexModel : PageModel
     {
@@ -19,15 +19,13 @@ namespace PerfectHoliday.Pages.Bookings
             _context = context;
         }
 
-        public IList<Booking> Booking { get;set; } = default!;
+        public IList<Hotel> Hotel { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            if (_context.Booking != null)
+            if (_context.Hotel != null)
             {
-                Booking = await _context.Booking
-                .Include(b => b.Hotel)
-                .ToListAsync();
+                Hotel = await _context.Hotel.ToListAsync();
             }
         }
     }
