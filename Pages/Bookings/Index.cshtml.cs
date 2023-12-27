@@ -23,7 +23,6 @@ namespace PerfectHoliday.Pages.Bookings
 
         public async Task OnGetAsync()
         {
-            if (_context.Booking != null)
             {
                 Booking = await _context.Booking
                 .Include(b => b.Hotel)

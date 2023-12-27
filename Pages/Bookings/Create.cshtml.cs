@@ -22,8 +22,8 @@ namespace PerfectHoliday.Pages.Bookings
 
         public IActionResult OnGet()
         {
-            ViewData["HotelID"] = new SelectList(_context.Set<Hotel>(), "ID","HotelName");
-
+            ViewData["HotelID"] = new SelectList(_context.Set<Hotel>(), "Id",
+           "HotelName");
             return Page();
         }
 

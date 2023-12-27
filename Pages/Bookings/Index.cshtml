@@ -2,10 +2,10 @@
 @model PerfectHoliday.Pages.Bookings.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "🏖️Bookings";
 }
 
-<h1>Index</h1>
+<h1>🏖️Bookings</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -40,11 +40,11 @@
     <tbody>
 @foreach (var item in Model.Booking) {
         <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Hotel.HotelName)
-                </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BeginDate)
+                @Html.DisplayFor(modelItem => item.Hotel.HotelName)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.BeginDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EndDate)

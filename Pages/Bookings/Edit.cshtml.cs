@@ -37,7 +37,7 @@ namespace PerfectHoliday.Pages.Bookings
                 return NotFound();
             }
             Booking = booking;
-            ViewData["HotelID"] = new SelectList(_context.Set<Hotel>(), "ID","HotelName");
+            ViewData["HotelID"] = new SelectList(_context.Set<Hotel>(), "Id","HotelName");
             return Page();
         }
 
