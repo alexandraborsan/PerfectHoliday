@@ -27,6 +27,8 @@ namespace PerfectHoliday.Models
         public int? HotelID { get; set; }
         public Hotel? Hotel { get; set; }
 
+        public ICollection<MealType>? MealTypes { get; set; }
+
         public Booking()
         {
             ReservationDate = DateTime.Now; // Se seteaza la data creari obiectului respectiv

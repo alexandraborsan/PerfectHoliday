@@ -17,5 +17,7 @@ namespace PerfectHoliday.Data
         public DbSet<PerfectHoliday.Models.Booking> Booking { get; set; } = default!;
 
         public DbSet<PerfectHoliday.Models.Hotel>? Hotel { get; set; }
+
+        public DbSet<PerfectHoliday.Models.Meal>? Meal { get; set; }
     }
 }

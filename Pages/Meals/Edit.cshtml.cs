@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using PerfectHoliday.Data;
 using PerfectHoliday.Models;
 
-namespace PerfectHoliday.Pages.Bookings
+namespace PerfectHoliday.Pages.Meals
 {
-    public class EditModel : MealTypesPageModel
+    public class EditModel : PageModel
     {
         private readonly PerfectHoliday.Data.PerfectHolidayContext _context;
 
@@ -22,42 +21,34 @@ namespace PerfectHoliday.Pages.Bookings
         }
 
         [BindProperty]
-        public Booking Booking { get; set; } = default!;
+        public Meal Meal { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Booking == null)
+            if (id == null || _context.Meal == null)
             {
                 return NotFound();
             }
 
-            Booking = await _context.Booking
-                .Include(b => b.Hotel)
-                .Include(b => b.MealTypes).ThenInclude(b => b.Meal)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (booking == null)
+            var meal =  await _context.Meal.FirstOrDefaultAsync(m => m.Id == id);
+            if (meal == null)
             {
                 return NotFound();
             }
-            PopulateAssignedMealType(_context, Booking); 
-
-            Booking = booking;
-            ViewData["HotelID"] = new SelectList(_context.Set<Hotel>(), "Id","HotelName");
+            Meal = meal;
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync(int? id, string[]selectedMeals)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Booking).State = EntityState.Modified;
+            _context.Attach(Meal).State = EntityState.Modified;
 
             try
             {
@@ -65,7 +56,7 @@ namespace PerfectHoliday.Pages.Bookings
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookingExists(Booking.Id))
+                if (!MealExists(Meal.Id))
                 {
                     return NotFound();
                 }
@@ -78,9 +69,9 @@ namespace PerfectHoliday.Pages.Bookings
             return RedirectToPage("./Index");
         }
 
-        private bool BookingExists(int id)
+        private bool MealExists(int id)
         {
-          return (_context.Booking?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Meal?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
