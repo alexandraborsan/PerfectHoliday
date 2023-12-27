@@ -20,6 +20,28 @@ namespace PerfectHoliday.Pages.Bookings
         }
 
         public IList<Booking> Booking { get;set; } = default!;
+        public BookingData BookingD { get; set; }
+        public int BookingId { get; set; }
+        public int MealId { get; set; }
+        public async Task OnGetAsync(int? id, int? mealId)
+        {
+            BookingD = new BookingData();
+
+            BookingD.Bookings = await _context.Booking
+            .Include(b => b.Hotel)
+            .Include(b => b.MealTypes)
+            .ThenInclude(b => b.Meal)
+            .AsNoTracking()
+            .OrderBy(b => b.BeginDate)
+            .ToListAsync();
+            if (id != null)
+            {
+                BookingId = id.Value;
+                Booking booking = BookingD.Bookings
+                .Where(i => i.Id == id.Value).Single();
+                BookingD.Meals = booking.MealTypes.Select(s => s.Meal);
+            }
+        }
 
         public async Task OnGetAsync()
         {

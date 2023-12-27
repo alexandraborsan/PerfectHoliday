@@ -34,12 +34,20 @@
             <th>
                 @Html.DisplayNameFor(model => model.Booking[0].Price)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].MealTypes)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Booking) {
-        <tr>
+    @foreach (var item in Model.BookingD.Bookings) {
+            string selectedRow = "";
+            if(item.Id == Model.BookingId)
+            {
+                selectedRow = "table-success";
+            }
+            <tr class="@selectedRow">
             <td>
                 @Html.DisplayFor(modelItem => item.Hotel.HotelName)
             </td>
@@ -61,6 +69,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
+                <td>
+                    @{
+                        foreach (var category in item.MealTypes)
+                        {
+                            @category.Meal.Id @: @category.Meal.MealPlan <br />
+                        }
+                    }
+                </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
