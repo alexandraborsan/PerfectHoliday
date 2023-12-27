@@ -18,7 +18,7 @@ namespace PerfectHoliday.Models
         public DateTime ReservationDate { get; set; }
         [Display(Name = "Number of adults")]
         public int NumberOfAdults { get; set; }
-        [Display(Name = "Number of kids")]
+        [Display(Name = "Number of children")]
         public int? NumberOfKids { get; set; } // Acesta este optional
 
         [Column(TypeName = "decimal(6, 2)")] 
