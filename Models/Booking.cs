@@ -26,7 +26,7 @@ namespace PerfectHoliday.Models
         [Display(Name = "Hotel")]
         public int? HotelID { get; set; }
         public Hotel? Hotel { get; set; }
-
+        [Display(Name = "Meal Type")]
         public ICollection<MealType>? MealTypes { get; set; }
 
         public Booking()

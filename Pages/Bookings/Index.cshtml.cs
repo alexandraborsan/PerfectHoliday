@@ -42,14 +42,5 @@ namespace PerfectHoliday.Pages.Bookings
                 BookingD.Meals = booking.MealTypes.Select(s => s.Meal);
             }
         }
-
-        public async Task OnGetAsync()
-        {
-            {
-                Booking = await _context.Booking
-                .Include(b => b.Hotel)
-                .ToListAsync();
-            }
-        }
     }
 }
