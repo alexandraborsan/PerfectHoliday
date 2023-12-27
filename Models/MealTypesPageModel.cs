@@ -3,9 +3,8 @@ using PerfectHoliday.Data;
 
 namespace PerfectHoliday.Models
 {
-    public class MealTypesPageModel
-    {
-        public class YourPageModel : PageModel
+    
+        public class MealTypesPageModel : PageModel
         {
             public List<AssignedMealType> AssignedMealTypeList;
 
@@ -42,7 +41,7 @@ namespace PerfectHoliday.Models
                 {
                     if (selectedMealsHS.Contains(cat.Id.ToString()))
                     {
-                        if (!mealTypes.Contains(cat.Id))
+                        if (!mealTypes.Contains(cat.Id))    
                         {
                             bookingToUpdate.MealTypes.Add(new MealType
                             {
@@ -63,5 +62,5 @@ namespace PerfectHoliday.Models
             }
         }
 
-    }
 }
+

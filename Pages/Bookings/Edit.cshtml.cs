@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -9,14 +6,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PerfectHoliday.Data;
 using PerfectHoliday.Models;
+using System.Collections.Generic;
 
 namespace PerfectHoliday.Pages.Bookings
 {
     public class EditModel : MealTypesPageModel
     {
-        private readonly PerfectHoliday.Data.PerfectHolidayContext _context;
+        private readonly PerfectHolidayContext _context;
 
-        public EditModel(PerfectHoliday.Data.PerfectHolidayContext context)
+        public EditModel(PerfectHolidayContext context)
         {
             _context = context;
         }
@@ -26,7 +24,7 @@ namespace PerfectHoliday.Pages.Bookings
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Booking == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -37,50 +35,54 @@ namespace PerfectHoliday.Pages.Bookings
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (booking == null)
+            if (Booking == null)
             {
                 return NotFound();
             }
-            PopulateAssignedMealType(_context, Booking); 
 
-            Booking = booking;
-            ViewData["HotelID"] = new SelectList(_context.Set<Hotel>(), "Id","HotelName");
+            PopulateAssignedMealType(_context, Booking);
+
+            ViewData["HotelID"] = new SelectList(_context.Set<Hotel>(), "Id", "HotelName");
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync(int? id, string[]selectedMeals)
+        private IActionResult NotFound()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            _context.Attach(Booking).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BookingExists(Booking.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
+            throw new NotImplementedException();
         }
 
-        private bool BookingExists(int id)
+        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedMeals)
         {
-          return (_context.Booking?.Any(e => e.Id == id)).GetValueOrDefault();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var bookingToUpdate = await _context.Booking
+            .Include(i => i.Hotel)
+            .Include(i => i.MealTypes)
+            .ThenInclude(i => i.Meal)
+            .FirstOrDefaultAsync(s => s.Id == id);
+            if (bookingToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            if (await TryUpdateModelAsync<Booking>(
+            bookingToUpdate,
+            "Booking",
+            i => i.BeginDate, i => i.EndDate,
+            i => i.ReservationDate, i => i.NumberOfAdults,
+            i => i.NumberOfKids, i => i.Price, i => i.HotelID))
+            {
+                UpdateMealTypes(_context, selectedMeals, bookingToUpdate);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            }
+
+            UpdateMealTypes(_context, selectedMeals, bookingToUpdate);
+            PopulateAssignedMealType(_context, bookingToUpdate);
+            return Page();
         }
     }
 }

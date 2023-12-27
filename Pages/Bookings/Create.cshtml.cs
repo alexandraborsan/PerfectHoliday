@@ -11,7 +11,7 @@ using PerfectHoliday.Models;
 
 namespace PerfectHoliday.Pages.Bookings
 {
-    public class CreateModel : PageModel
+    public class CreateModel : MealTypesPageModel
     {
         private readonly PerfectHoliday.Data.PerfectHolidayContext _context;
 
@@ -24,14 +24,36 @@ namespace PerfectHoliday.Pages.Bookings
         {
             ViewData["HotelID"] = new SelectList(_context.Set<Hotel>(), "Id",
            "HotelName");
+            var booking = new Booking();
+            booking.MealTypes = new List<MealType>();
+            PopulateAssignedMealType(_context, booking);
             return Page();
         }
 
         [BindProperty]
-        public Booking Booking { get; set; } = default!;
-        
+        public Booking Booking { get; set; }
+        public async Task<IActionResult> OnPostAsync(string[] selectedMeals)
+        {
+            var newBooking = new Booking();
+            if (selectedMeals != null)
+            {
+                newBooking.MealTypes = new List<MealType>();
+                foreach (var cat in selectedMeals)
+                {
+                    var catToAdd = new MealType
+                    {
+                        MealId = int.Parse(cat)
+                    };
+                    newBooking.MealTypes.Add(catToAdd);
+                }
+            }
+            Booking.MealTypes = newBooking.MealTypes;
+            _context.Booking.Add(Booking);
+            await _context.SaveChangesAsync();
+            return RedirectToPage("./Index");
+        }
 
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+
         public async Task<IActionResult> OnPostAsync()
         {
           if (!ModelState.IsValid || _context.Booking == null || Booking == null)
