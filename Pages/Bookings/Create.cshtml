@@ -35,7 +35,7 @@
             
             <div class="form-group">
                 <label asp-for="Booking.ReservationDate" class="control-label"></label>
-                <input asp-for="Booking.ReservationDate" class="form-control" />
+                <input id="Booking_ReservationDate" class="form-control" />
                 <span asp-validation-for="Booking.ReservationDate" class="text-danger"></span>
             </div>
             
@@ -98,4 +98,15 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            var reservationDateInput = document.getElementById("Booking_ReservationDate");
+
+            var today = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+
+            reservationDateInput.value = today;
+        });
+
+    </script>
 }

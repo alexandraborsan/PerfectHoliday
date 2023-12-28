@@ -48,23 +48,16 @@ namespace PerfectHoliday.Pages.Bookings
                 }
             }
             Booking.MealTypes = newBooking.MealTypes;
-            _context.Booking.Add(Booking);
-            await _context.SaveChangesAsync();
-            return RedirectToPage("./Index");
-        }
 
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-          if (!ModelState.IsValid || _context.Booking == null || Booking == null)
+            if (!ModelState.IsValid || _context.Booking == null || Booking == null)
             {
                 return Page();
             }
 
             _context.Booking.Add(Booking);
             await _context.SaveChangesAsync();
-
             return RedirectToPage("./Index");
         }
+
     }
 }
