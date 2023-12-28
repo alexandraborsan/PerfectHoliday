@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id:int?}"
 @model PerfectHoliday.Pages.Hotels.IndexModel
 
 @{
@@ -26,23 +26,87 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Hotel) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.HotelName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfStars)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adress)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.HotelData.Hotels)
+            {
+                string selectedRow = "";
+                if (item.Id == Model.HotelId)
+                {
+                    selectedRow = "table-success";
+                }
+                <tr class="@selectedRow">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HotelName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NumberOfStars)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Adress)
+                    </td>
+                    <td>
+                        <a asp-page="./Index" asp-route-id="@item.Id">Select</a> |
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+               }
     </tbody>
 </table>
+
+@if (Model.HotelData.Bookings != null)
+{
+    <h3>Bookings made at the selected Hotel</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Begining Date</th>
+                <th>Ending Date</th>
+                <th>Reservation Date</th>
+            </tr>
+        </thead>
+
+        @foreach (var item in Model.HotelData.Hotels)
+        {
+            string selectedRow = "";
+            if (item.Id == Model.HotelId)
+            {
+                selectedRow = "table-success";
+            }
+            <tr class="@selectedRow">
+                <td>
+                    @{
+                    foreach (var b in item.Bookings)
+                    {
+                        <p>
+                            @b.BeginDate.ToString("MM/dd/yyyy")
+                        </p>
+                    }
+                    }
+                </td>
+                <td>
+                @{
+                    foreach (var b in item.Bookings)
+                    {
+                            <p>
+                            @b.EndDate.ToString("MM/dd/yyyy")
+                            </p>
+                    }
+                }
+                </td>
+                <td>
+                @{
+                    foreach (var b in item.Bookings)
+                    {
+                            <p>
+                            @b.ReservationDate.ToString("MM/dd/yyyy")
+                            </p>
+                    }
+                }
+                </td>
+                    }
+                
+            </tr>
+        }
+    </table>
+}

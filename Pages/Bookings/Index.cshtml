@@ -10,6 +10,18 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by Hotel name
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            Find by Begining Date/ ReservationDate
+            <input type="date" name="SearchDate" value="@Model.CurrentDateFilter" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-page="./Index">Back to full List</a>
+        </p>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -17,13 +29,17 @@
                 @Html.DisplayNameFor(model => model.Booking[0].Hotel.HotelName)
             </th>
             <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.BeginDateSort">
                 @Html.DisplayNameFor(model => model.Booking[0].BeginDate)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Booking[0].EndDate)
             </th>
             <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.ReservationDateSort">
                 @Html.DisplayNameFor(model => model.Booking[0].ReservationDate)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Booking[0].NumberOfAdults)

@@ -23,9 +23,17 @@ namespace PerfectHoliday.Pages.Bookings
         public BookingData BookingD { get; set; }
         public int BookingId { get; set; }
         public int MealId { get; set; }
-        public async Task OnGetAsync(int? id, int? mealId)
+        public string BeginDateSort { get; set; }
+        public string ReservationDateSort { get; set; }
+        public string? CurrentFilter { get; set; }
+        public DateTime? CurrentDateFilter { get; set; }
+        public async Task OnGetAsync(int? id, int? mealId, string sortOrder, string searchString, DateTime searchDate)
         {
             BookingD = new BookingData();
+            BeginDateSort = String.IsNullOrEmpty(sortOrder) ? "beginDate_desc" : "beginDate";
+            ReservationDateSort = String.IsNullOrEmpty(sortOrder) ? "reservationDate_desc" : "reservationDate";
+            CurrentFilter = searchString;
+            CurrentDateFilter = searchDate;
 
             BookingD.Bookings = await _context.Booking
             .Include(b => b.Hotel)
@@ -34,13 +42,41 @@ namespace PerfectHoliday.Pages.Bookings
             .AsNoTracking()
             .OrderBy(b => b.BeginDate)
             .ToListAsync();
-            if (id != null)
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                BookingD.Bookings = BookingD.Bookings.Where(s => s.Hotel.HotelName.Contains(searchString));
+            }
+            if (searchDate != default)
+            {
+                BookingD.Bookings = BookingD.Bookings.Where(s => s.ReservationDate.Date == searchDate.Date
+                || s.BeginDate.Date == searchDate.Date);
+            }
+                if (id != null)
             {
                 BookingId = id.Value;
                 Booking booking = BookingD.Bookings
                 .Where(i => i.Id == id.Value).Single();
                 BookingD.Meals = booking.MealTypes.Select(s => s.Meal);
             }
+            switch (sortOrder)
+            {
+                case "beginDate_desc":
+                    BookingD.Bookings = BookingD.Bookings.OrderByDescending(s => s.BeginDate);
+                    break;
+                case "reservationDate_desc":
+                    BookingD.Bookings = BookingD.Bookings.OrderByDescending(s => s.ReservationDate);
+                    break;
+                case "beginDate":
+                    BookingD.Bookings = BookingD.Bookings.OrderBy(s => s.BeginDate);
+                    break;
+                case "reservationDate":
+                    BookingD.Bookings = BookingD.Bookings.OrderBy(s => s.ReservationDate);
+                    break;
+                default:
+                    BookingD.Bookings = BookingD.Bookings.OrderBy(s => s.BeginDate);
+                    break;
+            }
+
         }
     }
 }
